@@ -22,7 +22,19 @@ def captured_output():
 
 # implement this function
 def is_perfect(n):
-    pass
+    factors = []
+    total = 0
+    for x in range(1, (n // 2) + 1):
+        if n / x == n // x:
+            if x not in factors:
+                factors.append(x)
+    for factor in factors:
+        total += factor
+    print(total)
+    if total == n:
+        return True
+    else:
+        return False
 
 # (3 points)
 def test1():
