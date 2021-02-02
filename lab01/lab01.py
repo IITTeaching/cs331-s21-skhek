@@ -93,6 +93,15 @@ def test3():
 
 # implement this function
 def gen_pattern(chars):
+    reversedChars = chars[len(chars) - 1:0:-1]
+    string = reversedChars + chars
+    height = len(string)
+    width = len(string) * 2 - 1
+
+    pattern = ""
+
+    for i in range(height // 2):
+        print("hi")
     pass
 
 def test4():
