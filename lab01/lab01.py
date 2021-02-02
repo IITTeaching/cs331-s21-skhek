@@ -2,6 +2,7 @@ import unittest
 import sys
 from contextlib import contextmanager
 from io import StringIO
+from math import sqrt
 
 #################################################################################
 # TESTING OUTPUTS
@@ -25,12 +26,11 @@ def is_perfect(n):
     factors = []
     total = 0
     for x in range(1, (n // 2) + 1):
-        if n / x == n // x:
+        if n % x == 0:
             if x not in factors:
                 factors.append(x)
     for factor in factors:
         total += factor
-    print(total)
     if total == n:
         return True
     else:
@@ -52,7 +52,16 @@ def test1():
 
 # implement this function
 def multiples_of_3_and_5(n):
-    pass
+    factors = []
+    total = 0
+    for x in range(3, n, 3):
+        factors.append(x)
+    for x in range(5, n, 5):
+        if x % 3 != 0:
+            factors.append(x)
+    for factor in factors:
+        total = total + factor
+    return total
 
 # (3 points)
 def test2():
@@ -65,7 +74,12 @@ def test2():
 # EXERCISE 3
 #################################################################################
 def integer_right_triangles(p):
-    pass
+    cnt = 0
+    for i in range(2, int(p / 4) + 1):
+        for j in range(2, int(p / 2) + 1):
+            if i * i + j * j == (p - (i + j)) ** 2:
+                cnt = cnt + 1
+    return cnt
 
 def test3():
     tc = unittest.TestCase()
@@ -83,7 +97,7 @@ def gen_pattern(chars):
 
 def test4():
     tc = unittest.TestCase()
-    with captured_output() as (out,err):
+    with captured_output() as (out, err):
         gen_pattern('@')
         tc.assertEqual(out.getvalue().strip(), '@')
     with captured_output() as (out,err):
