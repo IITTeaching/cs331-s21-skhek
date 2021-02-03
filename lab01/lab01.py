@@ -95,18 +95,25 @@ def test3():
 def gen_pattern(chars):
     reversedChars = chars[len(chars) - 1:0:-1]
     string = reversedChars + chars
-    height = len(string)
-    width = len(string) * 2 - 1
+    rows = len(string)
+    columns = len('.'.join(string))
 
-    pattern = ""
-
-    for i in range(height // 2):
-        print("hi")
+    for i in range(rows):
+        if i <= rows // 2:
+            j = i
+        else:
+            j = rows - i - 1
+        hold = string[0:j + 1:1]
+        if len(hold) > 1:
+            hold = hold + hold[len(hold) - 2::-1]
+            hold = '.'.join(hold)
+        hold = hold.center(columns, '.')
+        print(hold)
     pass
 
 def test4():
     tc = unittest.TestCase()
-    with captured_output() as (out, err):
+    with captured_output() as (out,err):
         gen_pattern('@')
         tc.assertEqual(out.getvalue().strip(), '@')
     with captured_output() as (out,err):
