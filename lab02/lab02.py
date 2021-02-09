@@ -113,8 +113,9 @@ def gen_passage(ngram_dict, length=100):
         for word in randTupl:
             passage = passage + word + " "
         tok = randTupl[len(randTupl) - 1]
-        if tok not in list(ngram_dict.keys()):
+        if tok not in sorted(ngram_dict.keys()):
             tok = random.choice(sorted(ngram_dict.keys()))
+            passage = passage + tok + " "
     return passage[:len(passage) - 1]
 
 # 50 Points
