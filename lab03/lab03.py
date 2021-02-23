@@ -9,15 +9,11 @@ S = TypeVar('S')
 # EXERCISE 1
 #################################################################################
 def mysort(lst: List[T], compare: Callable[[T, T], int]) -> List[T]:
-    """
-    This method should sort input list lst of elements of some type T.
-
-    Elements of the list are compared using function compare that takes two
-    elements of type T as input and returns -1 if the left is smaller than the
-    right element, 1 if the left is larger than the right, and 0 if the two
-    elements are equal.
-    """
-    pass
+    for i in range(1, len(lst)):
+        for j in range(i, 0, -1):
+            if compare(lst[j], lst[j - 1]) == -1:
+                lst[j], lst[j - 1] = lst[j - 1], lst[j]
+    return lst
 
 def mybinsearch(lst: List[T], elem: S, compare: Callable[[T, S], int]) -> int:
     """
@@ -27,7 +23,18 @@ def mybinsearch(lst: List[T], elem: S, compare: Callable[[T, S], int]) -> int:
     position of the first (leftmost) match for elem in lst. If elem does not
     exist in lst, then return -1.
     """
-    pass
+    i = round(len(lst) / 2)
+    x = i
+    while x != 0 and i in range(0, len(lst)):
+        result = compare(lst[i], elem)
+        x = round(x / 2)
+        if result == 1:
+            i = i - x
+        elif result == -1:
+            i = i + x
+        else:
+            return i
+    return -1
 
 class Student():
     """Custom class to test generic sorting and searching."""
@@ -215,7 +222,9 @@ def test3_2():
 # TEST CASES
 #################################################################################
 def main():
+    print("start")
     test1()
+    print("1 done")
     test2()
     test3()
 
