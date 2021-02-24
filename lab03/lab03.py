@@ -116,7 +116,6 @@ class PrefixSearcher():
         mysort(substrs, f)
         self.substrings = substrs
         self.n = k
-        print(substrs)
 
     def search(self, q):
         if len(q) > self.n:
@@ -170,23 +169,53 @@ def test2_2():
 class SuffixArray():
 
     def __init__(self, document: str):
-        """
-        Creates a suffix array for document (a string).
-        """
-        pass
+        suffArr = []
+        for i in range(0, len(document)):
+            suffArr.append(i)
+        
+        def comp(x, y):
+            strX = document[x:]
+            strY = document[y:]
+            if strX == strY:
+                return 0
+            elif strX < strY:
+                return -1
+            else:
+                return 1
 
+        mysort(suffArr, comp)
+        self.suffArr = suffArr
+        self.document = document
 
     def positions(self, searchstr: str):
-        """
-        Returns all the positions of searchstr in the documented indexed by the suffix array.
-        """
-        pass
+        print(self.suffArr)
+        positions = []
+        i = round(len(self.suffArr) / 2)
+        x = i
+        while x != 0 and i in range(0, len(self.suffArr)):
+            x = round(x / 2)
+            if searchstr == self.document[self.suffArr[i]:self.suffArr[i] + len(searchstr)]:
+                positions.append(self.suffArr[i])
+                break
+            elif searchstr < self.document[self.suffArr[i]:self.suffArr[i] + len(searchstr)]:
+                i = i - x
+            else:
+                i = i + x
+
+        return positions
 
     def contains(self, searchstr: str):
-        """
-        Returns true of searchstr is coontained in document.
-        """
-        pass
+        i = round(len(self.suffArr) / 2)
+        x = i
+        while x != 0 and i in range(0, len(self.suffArr)):
+            x = round(x / 2)
+            if searchstr in self.document[self.suffArr[i]:self.suffArr[i] + len(searchstr)]:
+                return True
+            elif searchstr < self.document[self.suffArr[i]:self.suffArr[i] + len(searchstr)]:
+                i = i - x
+            else:
+                i = i + x
+        return False 
 
 # 40 Points
 def test3():
@@ -229,7 +258,9 @@ def main():
     test1()
     print("1 done")
     test2()
+    print("2 done")
     test3()
+    print("3 done")
 
 if __name__ == '__main__':
     main()
