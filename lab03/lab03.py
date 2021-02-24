@@ -16,13 +16,7 @@ def mysort(lst: List[T], compare: Callable[[T, T], int]) -> List[T]:
     return lst
 
 def mybinsearch(lst: List[T], elem: S, compare: Callable[[T, S], int]) -> int:
-    """
-    This method search for elem in lst using binary search.
 
-    The elements of lst are compared using function compare. Returns the
-    position of the first (leftmost) match for elem in lst. If elem does not
-    exist in lst, then return -1.
-    """
     i = round(len(lst) / 2)
     x = i
     while x != 0 and i in range(0, len(lst)):
@@ -115,20 +109,29 @@ def test1_5():
 class PrefixSearcher():
 
     def __init__(self, document, k):
-        """
-        Initializes a prefix searcher using a document and a maximum
-        search string length k.
-        """
-        pass
+        substrs = []
+        for i in range(0, len(document)):
+            substrs.append(document[i:i + k])
+        f = lambda x, y: 0 if x == y else (-1 if x < y else 1)
+        mysort(substrs, f)
+        self.substrings = substrs
+        self.n = k
+        print(substrs)
 
     def search(self, q):
-        """
-        Return true if the document contains search string q (of
-
-        length up to n). If q is longer than n, then raise an
-        Exception.
-        """
-        pass
+        if len(q) > self.n:
+            raise Exception("Length of search query is too long")
+        i = round(len(self.substrings) / 2)
+        x = i
+        while x != 0 and i in range(0, len(self.substrings)):
+            x = round(x / 2)
+            if q in self.substrings[i]:
+                return True
+            elif q < self.substrings[i]:
+                i = i - x
+            else:
+                i = i + x
+        return False 
 
 # 30 Points
 def test2():
