@@ -188,14 +188,13 @@ class SuffixArray():
         self.document = document
 
     def positions(self, searchstr: str):
-        print(self.suffArr)
         positions = []
         i = round(len(self.suffArr) / 2)
         x = i
         while x != 0 and i in range(0, len(self.suffArr)):
             x = round(x / 2)
             if searchstr == self.document[self.suffArr[i]:self.suffArr[i] + len(searchstr)]:
-                positions.append(self.suffArr[i])
+                positions.append(i - 1)
                 break
             elif searchstr < self.document[self.suffArr[i]:self.suffArr[i] + len(searchstr)]:
                 i = i - x
@@ -254,13 +253,9 @@ def test3_2():
 # TEST CASES
 #################################################################################
 def main():
-    print("start")
     test1()
-    print("1 done")
     test2()
-    print("2 done")
     test3()
-    print("3 done")
 
 if __name__ == '__main__':
     main()
