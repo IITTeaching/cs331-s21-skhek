@@ -144,12 +144,18 @@ class ArrayList:
     def append(self, value):
         """Appends value to the end of this list."""
         ### BEGIN SOLUTION
-        arr = [0] * (self.len + 1)
-        for i in range(0, self.len):
-            arr[i] = self.data[i]
-        arr[self.len] = value
-        self.len = len(arr)
-        return arr
+        temp = self.data
+        if self.len == 0:
+            self.data = ConstrainedList()
+            self.data[0] = value
+            self.len = 1
+        else:
+            if self.len == len(self.data):
+                self.data = ConstrainedList(self.len * 2)
+                for i in range(0, self.len):
+                    self.data[i] = temp[i]
+            self.data[self.len] = value
+            self.len = self.len + 1
         ### END SOLUTION
 
     def insert(self, idx, value):
@@ -157,6 +163,20 @@ class ArrayList:
         list, as needed. Note that inserting a value at len(self) --- equivalent
         to appending the value --- is permitted. Raises IndexError if idx is invalid."""
         ### BEGIN SOLUTION
+        if idx < 0 or idx > self.len:
+            raise IndexError
+        if self.len == idx:
+            self.append(value)
+        else:
+            if self.len == len(self.data):
+                temp = self.data
+                self.data = ConstrainedList(self.len * 2)
+                for i in range(0, self.len):
+                    self.data[i] = temp[i]
+            self.len = self.len + 1
+            for i in range(self.len - 1, idx, -1):
+                self.data[i] = self.data[i - 1]
+            self.data[idx] = value
         ### END SOLUTION
 
     def pop(self, idx=-1):
@@ -178,11 +198,19 @@ class ArrayList:
         """Returns True if this ArrayList contains the same elements (in order) as
         other. If other is not an ArrayList, returns False."""
         ### BEGIN SOLUTION
+        for i in range(0, self.len):
+            if self.data[i] != other[i]:
+                return False
+        return True
         ### END SOLUTION
 
     def __contains__(self, value):
         """Implements `val in self`. Returns true if value is found in this list."""
         ### BEGIN SOLUTION
+        for i in range(0, self.len):
+            if self.data[i] == value:
+                return True
+        return False
         ### END SOLUTION
 
 
@@ -191,16 +219,23 @@ class ArrayList:
     def __len__(self):
         """Implements `len(self)`"""
         ### BEGIN SOLUTION
+        return self.len
         ### END SOLUTION
 
     def min(self):
         """Returns the minimum value in this list."""
         ### BEGIN SOLUTION
+        if self.len != 0:
+            return self.data[0]
+        return None
         ### END SOLUTION
 
     def max(self):
         """Returns the maximum value in this list."""
         ### BEGIN SOLUTION
+        if self.len != 0:
+            return self.data[self.len - 1]
+        return None
         ### END SOLUTION
 
     def index(self, value, i=0, j=None):
@@ -209,11 +244,23 @@ class ArrayList:
         specified, search through the end of the list for value. If value
         is not in the list, raise a ValueError."""
         ### BEGIN SOLUTION
+        end = self.len
+        if j != None:
+            end = j
+        for x in range(i, end):
+            if self.data[x] == value:
+                return i
+        return ValueError
         ### END SOLUTION
 
     def count(self, value):
         """Returns the number of times value appears in this list."""
         ### BEGIN SOLUTION
+        cnt = 0
+        for x in range(0, self.len):
+            if self.data[x] == value:
+                cnt += 1
+        return cnt
         ### END SOLUTION
 
 
