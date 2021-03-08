@@ -117,11 +117,25 @@ class ArrayList:
         and enclosed by square brackets. E.g., for a list containing values
         1, 2 and 3, returns '[1, 2, 3]'."""
         ### BEGIN SOLUTION
+        hold = '['
+        for i in range(0, self.len):
+            if i != self.len - 1:
+                hold = hold + str(self.data[i]) + ', '
+            else:
+                hold = hold + str(self.data[i])
+        return hold + ']'
         ### END SOLUTION
 
     def __repr__(self):
         """Supports REPL inspection. (Same behavior as `str`.)"""
         ### BEGIN SOLUTION
+        hold = '['
+        for i in range(0, self.len):
+            if i != self.len - 1:
+                hold = hold + str(self.data[i]) + ', '
+            else:
+                hold = hold + str(self.data[i])
+        return hold + ']'
         ### END SOLUTION
 
 
@@ -130,6 +144,12 @@ class ArrayList:
     def append(self, value):
         """Appends value to the end of this list."""
         ### BEGIN SOLUTION
+        arr = [0] * (self.len + 1)
+        for i in range(0, self.len):
+            arr[i] = self.data[i]
+        arr[self.len] = value
+        self.len = len(arr)
+        return arr
         ### END SOLUTION
 
     def insert(self, idx, value):
