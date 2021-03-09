@@ -72,6 +72,7 @@ class ArrayList:
     def __init__(self, n=0):
         self.data = ConstrainedList(n) # don't change this line!
         self.len = n # the attribute self.len should be record the length of the list (do not rename!)
+        self.cnt = -1
 
     ### subscript-based access ###
 
@@ -336,18 +337,18 @@ class ArrayList:
     def __iter__(self):
         """Supports iteration (via `iter(self)`)"""
         ### BEGIN SOLUTION
-        elems = []
-        for i in range(0, self.len):
-            try:
-                for elem in self.data[i]:
-                    elems.append(elem)
-            except TypeError:
-                elems.append(self.data[i])
-        return elems
+        self.cnt = -1
+        return self.copy()
         ### END SOLUTION
 
+    def __next__(self):
+        self.cnt = self.cnt + 1
+        if self.cnt == self.len:
+            raise StopIteration
+        return self.data[self.cnt]
+
 ################################################################################
-# TEST CASES
+# TEST
 def arrayListToList(a):
     return list(a.data._as_list()[:len(a)])
 
@@ -502,7 +503,6 @@ def test_case_5():
 
     tc.assertEqual(0, len(lst))
     tc.assertEqual(0, lst.count(1))
-    print(lst)
     with tc.assertRaises(ValueError):
         lst.index(1)
 
@@ -583,7 +583,6 @@ def test_case_7():
     data = [random.randrange(1000) for _ in range(100)]
     lst.data = ConstrainedList.create(data)
     lst.len = len(lst.data)
-    print(lst)
     tc.assertEqual(data, [x for x in lst])
 
     it1 = iter(lst)
