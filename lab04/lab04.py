@@ -183,12 +183,29 @@ class ArrayList:
         """Deletes and returns the element at idx (which is the last element,
         by default)."""
         ### BEGIN SOLUTION
+        if idx == -1:
+            elem = self.data[self.len - 1]
+            self.__delitem__(self.len - 1)
+            return elem
+        else:
+            elem = self.data[idx]
+            self.__delitem__(idx)
+            return elem
         ### END SOLUTION
 
     def remove(self, value):
         """Removes the first (closest to the front) instance of value from the
         list. Raises a ValueError if value is not found in the list."""
         ### BEGIN SOLUTION
+        found = False
+        for i in range(0, self.len):
+            if value == self.data[i]:
+                self.pop(i)
+                found = True
+                break
+        if not found:
+            raise ValueError
+        
         ### END SOLUTION
 
 
@@ -198,6 +215,8 @@ class ArrayList:
         """Returns True if this ArrayList contains the same elements (in order) as
         other. If other is not an ArrayList, returns False."""
         ### BEGIN SOLUTION
+        if self.len != len(other):
+            return False
         for i in range(0, self.len):
             if self.data[i] != other[i]:
                 return False
@@ -225,17 +244,25 @@ class ArrayList:
     def min(self):
         """Returns the minimum value in this list."""
         ### BEGIN SOLUTION
-        if self.len != 0:
-            return self.data[0]
-        return None
+        if self.len == 0:
+            return None
+        hold = self.data[0]
+        for i in range(1, self.len):
+            if self.data[i] < hold:
+                hold = self.data[i]
+        return hold
         ### END SOLUTION
 
     def max(self):
         """Returns the maximum value in this list."""
         ### BEGIN SOLUTION
-        if self.len != 0:
-            return self.data[self.len - 1]
-        return None
+        if self.len == 0:
+            return None
+        hold = self.data[0]
+        for i in range(1, self.len):
+            if self.data[i] > hold:
+                hold = self.data[i]
+        return hold
         ### END SOLUTION
 
     def index(self, value, i=0, j=None):
@@ -246,11 +273,14 @@ class ArrayList:
         ### BEGIN SOLUTION
         end = self.len
         if j != None:
-            end = j
+            if j >= 0:
+                end = j
+            else:
+                end = self.len + j
         for x in range(i, end):
             if self.data[x] == value:
-                return i
-        return ValueError
+                return x
+        raise ValueError
         ### END SOLUTION
 
     def count(self, value):
@@ -271,6 +301,12 @@ class ArrayList:
         instance that contains the values in this list followed by those
         of other."""
         ### BEGIN SOLUTION
+        newArr = ArrayList()
+        for i in range(0, self.len):
+            newArr.append(self.data[i])
+        for i in range(0, len(other)):
+            newArr.append(other[i])
+        return newArr
         ### END SOLUTION
 
     def clear(self):
@@ -281,11 +317,17 @@ class ArrayList:
         """Returns a new ArrayList instance (with a separate data store), that
         contains the same values as this list."""
         ### BEGIN SOLUTION
+        newArr = ArrayList()
+        for i in range(0, self.len):
+            newArr.append(self.data[i])
+        return newArr
         ### END SOLUTION
 
     def extend(self, other):
         """Adds all elements, in order, from other --- an Iterable --- to this list."""
         ### BEGIN SOLUTION
+        for elem in other:
+            self.append(elem)
         ### END SOLUTION
 
 
@@ -294,6 +336,14 @@ class ArrayList:
     def __iter__(self):
         """Supports iteration (via `iter(self)`)"""
         ### BEGIN SOLUTION
+        elems = []
+        for i in range(0, self.len):
+            try:
+                for elem in self.data[i]:
+                    elems.append(elem)
+            except TypeError:
+                elems.append(self.data[i])
+        return elems
         ### END SOLUTION
 
 ################################################################################
@@ -452,6 +502,7 @@ def test_case_5():
 
     tc.assertEqual(0, len(lst))
     tc.assertEqual(0, lst.count(1))
+    print(lst)
     with tc.assertRaises(ValueError):
         lst.index(1)
 
@@ -532,6 +583,7 @@ def test_case_7():
     data = [random.randrange(1000) for _ in range(100)]
     lst.data = ConstrainedList.create(data)
     lst.len = len(lst.data)
+    print(lst)
     tc.assertEqual(data, [x for x in lst])
 
     it1 = iter(lst)
