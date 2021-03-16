@@ -43,18 +43,46 @@ class LinkedList:
         """Implements `x = self[idx]`"""
         assert(isinstance(idx, int))
         ### BEGIN SOLUTION
+        if idx < 0:
+            nidx = self.length + idx
+        else:
+            nidx = idx
+        if nidx > self.length or nidx < 0:
+            raise IndexError
+        x = self.head.next
+        for _ in range(0, nidx):
+            x = x.next
+        return x.val
         ### END SOLUTION
 
     def __setitem__(self, idx, value):
         """Implements `self[idx] = x`"""
         assert(isinstance(idx, int))
         ### BEGIN SOLUTION
+        if idx < 0:
+            nidx = self.length + idx
+        else:
+            nidx = idx
+        if nidx > self.length or nidx < 0:
+            raise IndexError
+        x = self.head.next
+        for _ in range(0, nidx):
+            x = x.next
+        x.val = value
         ### END SOLUTION
 
     def __delitem__(self, idx):
         """Implements `del self[idx]`"""
         assert(isinstance(idx, int))
         ### BEGIN SOLUTION
+        if idx > self.length:
+            raise IndexError
+        x = self.head.next
+        for _ in range(0, idx):
+            x = x.next
+        x.prior.next = x.next
+        x.next.prior = x.prior
+        self.length -= 1
         ### END SOLUTION
 
     ### cursor-based access ###
@@ -101,6 +129,13 @@ class LinkedList:
         and enclosed by square brackets. E.g., for a list containing values
         1, 2 and 3, returns '[1, 2, 3]'."""
         ### BEGIN SOLUTION
+        string = '['
+        x = self.head.next
+        for _ in range(0, self.length - 1):
+            string += str(x.val) + ', '
+            x = x.next
+        string += str(x.val) + ']'
+        return string
         ### END SOLUTION
 
     def __repr__(self):
