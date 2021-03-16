@@ -91,11 +91,16 @@ class LinkedList:
         """retrieves the value at the current cursor position"""
         assert self.cursor is not self.head
         ### BEGIN SOLUTION
+        x = self.head.next
+        for _ in range(0, self.cursor):
+            x = x.next
+        return x.val
         ### END SOLUTION
 
     def cursor_set(self, idx):
         """sets the cursor to the node at the provided index"""
         ### BEGIN SOLUTION
+        self.cursor = idx
         ### END SOLUTION
 
     def cursor_move(self, offset):
@@ -106,12 +111,21 @@ class LinkedList:
         node as needed"""
         assert len(self) > 0
         ### BEGIN SOLUTION
+        self.cursor = (self.cursor + offset) % self.length
         ### END SOLUTION
 
     def cursor_insert(self, value):
         """inserts a new value after the cursor and sets the cursor to the
         new node"""
         ### BEGIN SOLUTION
+        x = self.head.next
+        for _ in range(0, self.cursor):
+            x = x.next
+        newNode = LinkedList.Node(value, x, x.next)
+        self.length += 1
+        x.next.prior = newNode
+        x.next = newNode
+        self.cursor_move(1)
         ### END SOLUTION
 
     def cursor_delete(self):
@@ -348,6 +362,10 @@ def test_custor_based_access():
         offset = random.randrange(-200, 200)
         idx = (idx + offset) % 100
         lst2.cursor_move(offset)
+        print(str(lst1[idx]))
+        print(str(lst2.cursor_get()))
+        print(lst1)
+        print(lst2)
         assert lst1[idx] == lst2.cursor_get()
 
     ## move the cursor around and delete values at the cursor
