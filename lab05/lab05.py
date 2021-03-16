@@ -149,6 +149,8 @@ class LinkedList:
         and enclosed by square brackets. E.g., for a list containing values
         1, 2 and 3, returns '[1, 2, 3]'."""
         ### BEGIN SOLUTION
+        if self.length == 0:
+            return '[]'
         string = '['
         x = self.head.next
         for _ in range(0, self.length - 1):
@@ -161,6 +163,15 @@ class LinkedList:
     def __repr__(self):
         """Supports REPL inspection. (Same behavior as `str`.)"""
         ### BEGIN SOLUTION
+        if self.length == 0:
+            return '[]'
+        string = '['
+        x = self.head.next
+        for _ in range(0, self.length - 1):
+            string += str(x.val) + ', '
+            x = x.next
+        string += str(x.val) + ']'
+        return string
         ### END SOLUTION
 
     ### single-element manipulation ###
