@@ -133,6 +133,12 @@ class LinkedList:
         following node"""
         assert self.cursor is not self.head and len(self) > 0
         ### BEGIN SOLUTION
+        x = self.head.next
+        for _ in range(0, self.cursor):
+            x = x.next
+        x.prior.next = x.next
+        x.next.prior = x.prior
+        self.length -= 1
         ### END SOLUTION
 
     ### stringification ###
@@ -362,10 +368,6 @@ def test_custor_based_access():
         offset = random.randrange(-200, 200)
         idx = (idx + offset) % 100
         lst2.cursor_move(offset)
-        print(str(lst1[idx]))
-        print(str(lst2.cursor_get()))
-        print(lst1)
-        print(lst2)
         assert lst1[idx] == lst2.cursor_get()
 
     ## move the cursor around and delete values at the cursor
@@ -385,7 +387,10 @@ def test_custor_based_access():
         lst2.cursor_move(offset)
         del lst1[idx]
         lst2.cursor_delete()
-
+    """
+    print(lst1)
+    print(lst2)
+    """
     assert len(lst1) == len(lst2)
     for i in range(len(lst1)):
         assert lst1[i] == lst2[i]
