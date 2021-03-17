@@ -43,6 +43,8 @@ class LinkedList:
         """Implements `x = self[idx]`"""
         assert(isinstance(idx, int))
         ### BEGIN SOLUTION
+        if self.length == 0:
+            raise IndexError
         if idx < 0:
             nidx = self.length + idx
         else:
@@ -329,23 +331,44 @@ class LinkedList:
         of other."""
         assert(isinstance(other, LinkedList))
         ### BEGIN SOLUTION
-
+        newList = LinkedList()
+        x = self.head.next
+        for _ in range(self.length):
+            newList.append(x.val)
+            x = x.next
+        y = other.head.next
+        for _ in range(self.length):
+            newList.append(y.val)
+            y = y.next
+        return newList
         ### END SOLUTION
 
     def clear(self):
         """Removes all elements from this list."""
         ### BEGIN SOLUTION
+        self.head.prior = self.head
+        self.head.next = self.head
+        self.cursor = self.head
+        self.length = 0
         ### END SOLUTION
 
     def copy(self):
         """Returns a new LinkedList instance (with separate Nodes), that
         contains the same values as this list."""
         ### BEGIN SOLUTION
+        newList = LinkedList()
+        x = self.head.next
+        for _ in range(self.length):
+            newList.append(x.val)
+            x = x.next
+        return newList
         ### END SOLUTION
 
     def extend(self, other):
         """Adds all elements, in order, from other --- an Iterable --- to this list."""
         ### BEGIN SOLUTION
+        for i in other:
+            self.append(i)
         ### END SOLUTION
 
     ### iteration ###
