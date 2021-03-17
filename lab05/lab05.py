@@ -249,6 +249,12 @@ class LinkedList:
     def __contains__(self, value):
         """Implements `val in self`. Returns true if value is found in this list."""
         ### BEGIN SOLUTION
+        x = self.head.next
+        for _ in range(self.length):
+            if x.val == value:
+                return True
+            x = x.next
+        return False
         ### END SOLUTION
 
     ### queries ###
@@ -260,11 +266,27 @@ class LinkedList:
     def min(self):
         """Returns the minimum value in this list."""
         ### BEGIN SOLUTION
+        if self.length == 0:
+            return None
+        x = self.head.next
+        lowest = x.val
+        for _ in range(1, self.length):
+            if x.val < lowest:
+                lowest = x.val
+        return lowest
         ### END SOLUTION
 
     def max(self):
         """Returns the maximum value in this list."""
         ### BEGIN SOLUTION
+        if self.length == 0:
+            return None
+        x = self.head.next
+        greatest = x.val
+        for _ in range(1, self.length):
+            if x.val > greatest:
+                greatest = x.val
+        return greatest
         ### END SOLUTION
 
     def index(self, value, i=0, j=None):
@@ -273,11 +295,34 @@ class LinkedList:
         specified, search through the end of the list for value. If value
         is not in the list, raise a ValueError."""
         ### BEGIN SOLUTION
+        if j == None:
+            j = self.length
+        x = self.head.next
+        for _ in range(0, i):
+            x = x.next
+        if j < 0:
+            for l in range(i, j, -1):
+                if x.val == value:
+                    return l
+                x = x.prior
+        else:
+            for l in range(i, j):
+                if x.val == value:
+                    return l
+                x = x.next
+        raise ValueError
         ### END SOLUTION
 
     def count(self, value):
         """Returns the number of times value appears in this list."""
         ### BEGIN SOLUTION
+        x = self.head.next
+        cnt = 0
+        for _ in range(self.length):
+            if x.val == value:
+                cnt += 1
+            x = x.next
+        return cnt
         ### END SOLUTION
 
     ### bulk operations ###
@@ -316,7 +361,7 @@ class LinkedList:
     def reverse(self):
         """Return a copy of the list with all elements in reverse order.
 
-        E.g., for [1,2,3] you shoudl return [3,2,1].
+        E.g., for [1,2,3] you should return [3,2,1].
         """
         ### BEGIN SOLUTION
         ### END SOLUTION
