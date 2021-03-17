@@ -185,18 +185,49 @@ class LinkedList:
             raise IndexError
         elif idx == self.length:
             self.append(value=value)
+        else:
+            x = self.head.next
+            for _ in range(idx):
+                x = x.next
+            newNode = LinkedList.Node(value, x.prior, x)
+            x.prior.next = newNode
+            x.prior = newNode
+            self.length += 1
         ### END SOLUTION
 
     def pop(self, idx=-1):
         """Deletes and returns the element at idx (which is the last element,
         by default)."""
         ### BEGIN SOLUTION
+        if idx == -1:
+            self.__delitem__(self.length - 1)
+            return self.head.prior
+        x = self.head.next
+        for _ in range(idx):
+            x = x.next
+        x.prior.next = x.next
+        x.next.prior = x.prior
+        self.length -= 1
+        return x.val
         ### END SOLUTION
 
     def remove(self, value):
         """Removes the first (closest to the front) instance of value from the
         list. Raises a ValueError if value is not found in the list."""
         ### BEGIN SOLUTION
+        if self.length < 1:
+            raise ValueError
+        x = self.head.next
+        found = False
+        for _ in range(self.length):
+            if x.val == value:
+                x.prior.next = x.next
+                x.next.prior = x.prior
+                found = True
+                break
+            x = x.next
+        if not found:
+            raise ValueError
         ### END SOLUTION
 
     ### predicates (T/F queries) ###
@@ -205,6 +236,14 @@ class LinkedList:
         """Returns True if this LinkedList contains the same elements (in order) as
         other. If other is not an LinkedList, returns False."""
         ### BEGIN SOLUTION
+        if isinstance(other, LinkedList) == False or len(other) != self.length:
+            return False
+        x = self.head.next
+        y = other.head.next
+        for _ in range(self.length):
+            if x.val != y.val:
+                return False
+        return True
         ### END SOLUTION
 
     def __contains__(self, value):
