@@ -181,6 +181,10 @@ class LinkedList:
         list, as needed. Note that inserting a value at len(self) --- equivalent
         to appending the value --- is permitted. Raises IndexError if idx is invalid."""
         ### BEGIN SOLUTION
+        if idx > self.length or idx < 0:
+            raise IndexError
+        elif idx == self.length:
+            self.append(value=value)
         ### END SOLUTION
 
     def pop(self, idx=-1):
