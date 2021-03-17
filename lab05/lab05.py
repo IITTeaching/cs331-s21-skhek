@@ -16,6 +16,7 @@ class LinkedList:
         self.head.prior = self.head.next = self.head # set up "circular" topology
         self.cursor = self.head
         self.length = 0
+        self.currentInter = self.head
 
     ### prepend and append, below, from class discussion
 
@@ -367,15 +368,23 @@ class LinkedList:
     def extend(self, other):
         """Adds all elements, in order, from other --- an Iterable --- to this list."""
         ### BEGIN SOLUTION
-        for i in other:
-            self.append(i)
+        for elem in other:
+            self.append(elem)
         ### END SOLUTION
 
     ### iteration ###
     def __iter__(self):
         """Supports iteration (via `iter(self)`)"""
         ### BEGIN SOLUTION
+        self.currentInter = self.head
+        return self.copy()
         ### END SOLUTION
+
+    def __next__(self):
+        self.currentInter = self.currentInter.next
+        if self.currentInter == self.head:
+            raise StopIteration
+        return self.currentInter.val
 
     ### reverse ###
     def reverse(self):
