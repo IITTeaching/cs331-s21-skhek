@@ -393,6 +393,12 @@ class LinkedList:
         E.g., for [1,2,3] you should return [3,2,1].
         """
         ### BEGIN SOLUTION
+        newList = LinkedList()
+        x = self.head.prior
+        for _ in range(self.length):
+            newList.append(x.val)
+            x = x.prior
+        return newList
         ### END SOLUTION
 
 
