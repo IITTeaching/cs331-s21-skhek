@@ -273,6 +273,7 @@ class LinkedList:
         for _ in range(1, self.length):
             if x.val < lowest:
                 lowest = x.val
+            x = x.next
         return lowest
         ### END SOLUTION
 
@@ -286,6 +287,7 @@ class LinkedList:
         for _ in range(1, self.length):
             if x.val > greatest:
                 greatest = x.val
+            x = x.next
         return greatest
         ### END SOLUTION
 
@@ -295,21 +297,15 @@ class LinkedList:
         specified, search through the end of the list for value. If value
         is not in the list, raise a ValueError."""
         ### BEGIN SOLUTION
-        if j == None:
+        if j == None or j == -1:
             j = self.length
         x = self.head.next
         for _ in range(0, i):
             x = x.next
-        if j < 0:
-            for l in range(i, j, -1):
-                if x.val == value:
-                    return l
-                x = x.prior
-        else:
-            for l in range(i, j):
-                if x.val == value:
-                    return l
-                x = x.next
+        for l in range(i, j):
+            if x.val == value:
+                return l
+            x = x.next
         raise ValueError
         ### END SOLUTION
 
@@ -333,6 +329,7 @@ class LinkedList:
         of other."""
         assert(isinstance(other, LinkedList))
         ### BEGIN SOLUTION
+
         ### END SOLUTION
 
     def clear(self):
