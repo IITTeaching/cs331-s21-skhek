@@ -51,6 +51,19 @@ def check_delimiters(expr):
     delim_closers = '})]>'
 
     ### BEGIN SOLUTION
+    s = Stack()
+    for char in expr:
+        if char in delim_openers:
+            s.push(char)
+        elif char in delim_closers:
+            if s.peek() != None and delim_closers.index(char) == delim_openers.index(s.peek()):
+                s.pop()
+            else:
+                return False
+    if s.peek() == None:
+        return True
+    else:
+        return False
     ### END SOLUTION
 
 ################################################################################
@@ -107,6 +120,7 @@ def test_check_delimiters_6():
     tc.assertFalse(check_delimiters('((((((( ))))))'))
     tc.assertFalse(check_delimiters('< < > > >'))
     tc.assertFalse(check_delimiters('( [] < {} )'))
+
 
 ################################################################################
 # INFIX -> POSTFIX CONVERSION
@@ -167,10 +181,12 @@ class Queue:
     def enqueue(self, val):
         ### BEGIN SOLUTION
         ### END SOLUTION
+        pass
 
     def dequeue(self):
         ### BEGIN SOLUTION
         ### END SOLUTION
+        pass
 
     def resize(self, newsize):
         assert(len(self.data) < newsize)
@@ -180,6 +196,7 @@ class Queue:
     def empty(self):
         ### BEGIN SOLUTION
         ### END SOLUTION
+        pass
 
     def __bool__(self):
         return not self.empty()
@@ -195,6 +212,7 @@ class Queue:
     def __iter__(self):
         ### BEGIN SOLUTION
         ### END SOLUTION
+        pass
 
 ################################################################################
 # QUEUE IMPLEMENTATION - TEST CASES
