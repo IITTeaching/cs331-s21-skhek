@@ -133,8 +133,33 @@ def infix_to_postfix(expr):
             '+': 1, '-': 1}
     ops = Stack()
     postfix = []
-    toks = expr.split()
+    toks = expr.split(' ')
     ### BEGIN SOLUTION
+    for tok in toks:
+        repeat = True
+        while repeat:
+            if tok.isdigit():
+                postfix.append(tok)
+                repeat = False
+            elif ops.peek() == None or ops.peek() == '(' or tok == '(':
+                ops.push(tok)
+                repeat = False
+            elif tok == ')':
+                while ops.peek() != '(':
+                    postfix.append(ops.pop())
+                ops.pop()
+                repeat = False
+            elif prec[tok] > prec[ops.peek()]:
+                ops.push(tok)
+                repeat = False
+            elif prec[tok] == prec[ops.peek()]:
+                postfix.append(ops.pop())
+                ops.push(tok)
+                repeat = False
+            else:
+                postfix.append(ops.pop())
+    while ops.peek() != None:
+        postfix.append(ops.pop())
     ### END SOLUTION
     return ' '.join(postfix)
 
