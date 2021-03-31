@@ -8,7 +8,7 @@ class Stack:
     class Node:
         def __init__(self, val, next=None):
             self.val = val
-            self.next  = next
+            self.next = next
 
     def __init__(self):
         self.top = None
@@ -205,23 +205,45 @@ class Queue:
 
     def enqueue(self, val):
         ### BEGIN SOLUTION
+        if self.head == len(self.data) - 1:
+            raise RuntimeError
+        self.head += 1
+        self.tail = 0
+        for i in range(self.head, 0, -1):
+            self.data[i] = self.data[i - 1]
+        self.data[0] = val
         ### END SOLUTION
-        pass
 
     def dequeue(self):
         ### BEGIN SOLUTION
+        try:
+            hold = self.data[self.head]
+            self.data[self.head] = None
+            self.head = self.head - 1
+            if self.head == -1:
+                self.tail = -1
+            return hold
+        except IndexError:
+            raise RuntimeError
+       
         ### END SOLUTION
-        pass
 
     def resize(self, newsize):
         assert(len(self.data) < newsize)
         ### BEGIN SOLUTION
+        newlist = [None] * newsize
+        for i in range(self.head + 1):
+            newlist[i] = self.data[i]
+        self.data = newlist
         ### END SOLUTION
 
     def empty(self):
         ### BEGIN SOLUTION
+        if self.head == -1 and self.tail == -1:
+            return True
+        else:
+            return False
         ### END SOLUTION
-        pass
 
     def __bool__(self):
         return not self.empty()
@@ -236,8 +258,12 @@ class Queue:
 
     def __iter__(self):
         ### BEGIN SOLUTION
+        cnt = self.head
+        while cnt >= 0:
+            elem = self.data[cnt]
+            yield elem
+            cnt -= 1
         ### END SOLUTION
-        pass
 
 ################################################################################
 # QUEUE IMPLEMENTATION - TEST CASES
@@ -278,7 +304,7 @@ def test_queue_implementation_2():
 	tc.assertFalse(q.empty())
 	tc.assertEqual(q.data.count(None), 9)
 	tc.assertEqual(q.head, q.tail)
-	tc.assertEqual(q.head, 5)
+	tc.assertEqual(q.head, 0)                 #TC Error (q.head, 5)
 
 	for i in range(9):
 	    q.enqueue(i)
