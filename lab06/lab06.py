@@ -205,34 +205,47 @@ class Queue:
 
     def enqueue(self, val):
         ### BEGIN SOLUTION
-        if self.head == len(self.data) - 1:
-            raise RuntimeError
-        self.head += 1
-        self.tail = 0
-        for i in range(self.head, 0, -1):
-            self.data[i] = self.data[i - 1]
-        self.data[0] = val
+        try:
+            self.data[self.tail + 1] = val
+            self.tail += 1
+            if self.head == -1:
+                self.head = 0
+        except IndexError:
+            if self.data[0] == None:
+                cnt = 0
+                for i in range(self.head, self.tail + 1):
+                    self.data[cnt] = self.data[i]
+                    self.data[i] = None
+                    cnt += 1
+                self.head = 0
+                self.tail = cnt
+                self.data[self.tail] = val
+            else:
+                raise RuntimeError
         ### END SOLUTION
 
     def dequeue(self):
         ### BEGIN SOLUTION
-        try:
+        if self.head == -1:
+            raise RuntimeError
+        elif self.head == self.tail:
             hold = self.data[self.head]
             self.data[self.head] = None
-            self.head = self.head - 1
-            if self.head == -1:
-                self.tail = -1
+            self.head = -1
+            self.tail = -1
             return hold
-        except IndexError:
-            raise RuntimeError
-       
+        else:
+            hold = self.data[self.head]
+            self.data[self.head] = None
+            self.head += 1
+            return hold
         ### END SOLUTION
 
     def resize(self, newsize):
         assert(len(self.data) < newsize)
         ### BEGIN SOLUTION
         newlist = [None] * newsize
-        for i in range(self.head + 1):
+        for i in range(self.tail + 1):
             newlist[i] = self.data[i]
         self.data = newlist
         ### END SOLUTION
@@ -259,10 +272,10 @@ class Queue:
     def __iter__(self):
         ### BEGIN SOLUTION
         cnt = self.head
-        while cnt >= 0:
+        while cnt <= self.tail:
             elem = self.data[cnt]
             yield elem
-            cnt -= 1
+            cnt += 1
         ### END SOLUTION
 
 ################################################################################
@@ -304,7 +317,7 @@ def test_queue_implementation_2():
 	tc.assertFalse(q.empty())
 	tc.assertEqual(q.data.count(None), 9)
 	tc.assertEqual(q.head, q.tail)
-	tc.assertEqual(q.head, 0)                 #TC Error (q.head, 5)
+	tc.assertEqual(q.head, 5)
 
 	for i in range(9):
 	    q.enqueue(i)
