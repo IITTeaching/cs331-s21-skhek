@@ -89,21 +89,29 @@ class ExtensibleHashTable:
 
     def __iter__(self):
         ### BEGIN SOLUTION
+        for val in self.buckets:
+            if val != None:
+                yield val[0]
         ### END SOLUTION
-        pass
 
     def keys(self):
         return iter(self)
 
     def values(self):
         ### BEGIN SOLUTION
+        l = []
+        for key in self.keys():
+            l.append(self.__getitem__(key))
+        return l
         ### END SOLUTION
-        pass
 
     def items(self):
         ### BEGIN SOLUTION
+        l = []
+        for key in self.keys():
+            l.append((key, self.__getitem__(key)))
+        return l
         ### END SOLUTION
-        pass
 
     def __str__(self):
         return '{ ' + ', '.join(str(k) + ': ' + str(v) for k, v in self.items()) + ' }'
