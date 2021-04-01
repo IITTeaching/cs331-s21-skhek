@@ -8,7 +8,7 @@ class Stack:
     class Node:
         def __init__(self, val, next=None):
             self.val = val
-            self.next  = next
+            self.next = next
 
     def __init__(self):
         self.top = None
@@ -51,6 +51,19 @@ def check_delimiters(expr):
     delim_closers = '})]>'
 
     ### BEGIN SOLUTION
+    s = Stack()
+    for char in expr:
+        if char in delim_openers:
+            s.push(char)
+        elif char in delim_closers:
+            if s.peek() != None and delim_closers.index(char) == delim_openers.index(s.peek()):
+                s.pop()
+            else:
+                return False
+    if s.peek() == None:
+        return True
+    else:
+        return False
     ### END SOLUTION
 
 ################################################################################
@@ -108,6 +121,7 @@ def test_check_delimiters_6():
     tc.assertFalse(check_delimiters('< < > > >'))
     tc.assertFalse(check_delimiters('( [] < {} )'))
 
+
 ################################################################################
 # INFIX -> POSTFIX CONVERSION
 ################################################################################
@@ -119,8 +133,33 @@ def infix_to_postfix(expr):
             '+': 1, '-': 1}
     ops = Stack()
     postfix = []
-    toks = expr.split()
+    toks = expr.split(' ')
     ### BEGIN SOLUTION
+    for tok in toks:
+        repeat = True
+        while repeat:
+            if tok.isdigit():
+                postfix.append(tok)
+                repeat = False
+            elif ops.peek() == None or ops.peek() == '(' or tok == '(':
+                ops.push(tok)
+                repeat = False
+            elif tok == ')':
+                while ops.peek() != '(':
+                    postfix.append(ops.pop())
+                ops.pop()
+                repeat = False
+            elif prec[tok] > prec[ops.peek()]:
+                ops.push(tok)
+                repeat = False
+            elif prec[tok] == prec[ops.peek()]:
+                postfix.append(ops.pop())
+                ops.push(tok)
+                repeat = False
+            else:
+                postfix.append(ops.pop())
+    while ops.peek() != None:
+        postfix.append(ops.pop())
     ### END SOLUTION
     return ' '.join(postfix)
 
@@ -166,19 +205,57 @@ class Queue:
 
     def enqueue(self, val):
         ### BEGIN SOLUTION
+        try:
+            self.data[self.tail + 1] = val
+            self.tail += 1
+            if self.head == -1:
+                self.head = 0
+        except IndexError:
+            if self.data[0] == None:
+                cnt = 0
+                for i in range(self.head, self.tail + 1):
+                    self.data[cnt] = self.data[i]
+                    self.data[i] = None
+                    cnt += 1
+                self.head = 0
+                self.tail = cnt
+                self.data[self.tail] = val
+            else:
+                raise RuntimeError
         ### END SOLUTION
 
     def dequeue(self):
         ### BEGIN SOLUTION
+        if self.head == -1:
+            raise RuntimeError
+        elif self.head == self.tail:
+            hold = self.data[self.head]
+            self.data[self.head] = None
+            self.head = -1
+            self.tail = -1
+            return hold
+        else:
+            hold = self.data[self.head]
+            self.data[self.head] = None
+            self.head += 1
+            return hold
         ### END SOLUTION
 
     def resize(self, newsize):
         assert(len(self.data) < newsize)
         ### BEGIN SOLUTION
+        newlist = [None] * newsize
+        for i in range(self.tail + 1):
+            newlist[i] = self.data[i]
+        self.data = newlist
         ### END SOLUTION
 
     def empty(self):
         ### BEGIN SOLUTION
+        if self.head == -1 and self.tail == -1:
+            return True
+        else:
+            return False
         ### END SOLUTION
 
     def __bool__(self):
@@ -194,6 +271,11 @@ class Queue:
 
     def __iter__(self):
         ### BEGIN SOLUTION
+        cnt = self.head
+        while cnt <= self.tail:
+            elem = self.data[cnt]
+            yield elem
+            cnt += 1
         ### END SOLUTION
 
 ################################################################################
