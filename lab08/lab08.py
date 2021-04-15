@@ -156,7 +156,27 @@ def test_key_heap_5():
 ################################################################################
 def running_medians(iterable):
     ### BEGIN SOLUTION
-    pass
+    minH = Heap(lambda x:-x)
+    maxH = Heap()
+    curmedian = 0
+    allMedians = []
+    for x in iterable:
+        if x > curmedian:
+            if len(minH) > len(maxH):
+                maxH.add(minH.pop())
+            minH.add(x)
+        else:
+            if len(maxH) > len(minH):
+                minH.add(maxH.pop())
+            maxH.add(x)
+        if len(maxH) > len(minH):
+            allMedians.append(maxH.peek())
+        elif len(maxH) < len(minH):
+            allMedians.append(minH.peek())
+        else:
+            allMedians.append((minH.peek() + maxH.peek()) / 2)
+        curmedian = allMedians[len(allMedians) - 1]
+    return allMedians
     ### END SOLUTION
 
 ################################################################################
