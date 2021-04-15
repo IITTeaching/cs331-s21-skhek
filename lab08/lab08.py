@@ -22,12 +22,38 @@ class Heap:
     def _right(idx):
         return idx*2+2
 
-    def heapify(self, idx=0):
+    def heapify_up(self, idx=0):
         ### BEGIN SOLUTION
+        if idx != 0 and self.key(self.data[self._parent(idx)]) < self.key(self.data[idx]):
+            pval = self.data[self._parent(idx)]
+            cval = self.data[idx]
+            self.data[self._parent(idx)] = cval
+            self.data[idx] = pval
+            self.heapify_up(self._parent(idx))
+        ### END SOLUTION
+
+    def heapify_down(self, idx=0):
+        ### BEGIN SOLUTION
+        if self._left(idx) < len(self.data): #left child exists, right child mmight exists
+            keyval = self.key(self.data[idx])
+            if self._right(idx) < len(self.data) and self.key(self.data[self._right(idx)]) > keyval and self.key(self.data[self._right(idx)]) > self.key(self.data[self._left(idx)]):
+                pval = self.data[idx]
+                cval = self.data[self._right(idx)]
+                self.data[idx] = cval
+                self.data[self._right(idx)] = pval
+                self.heapify_down(self._right(idx))
+            elif self.key(self.data[self._left(idx)]) > keyval:
+                pval = self.data[idx]
+                cval = self.data[self._left(idx)]
+                self.data[idx] = cval
+                self.data[self._left(idx)] = pval
+                self.heapify_down(self._left(idx))
         ### END SOLUTION
 
     def add(self, x):
         ### BEGIN SOLUTION
+        self.data.append(x)
+        self.heapify_up(len(self.data) - 1)
         ### END SOLUTION
 
     def peek(self):
@@ -37,7 +63,7 @@ class Heap:
         ret = self.data[0]
         self.data[0] = self.data[len(self.data)-1]
         del self.data[len(self.data)-1]
-        self.heapify()
+        self.heapify_down()
         return ret
 
     def __iter__(self):
@@ -130,6 +156,7 @@ def test_key_heap_5():
 ################################################################################
 def running_medians(iterable):
     ### BEGIN SOLUTION
+    pass
     ### END SOLUTION
 
 ################################################################################
@@ -174,6 +201,7 @@ def test_median_3():
 ################################################################################
 def topk(items, k, keyf):
     ### BEGIN SOLUTION
+    pass
     ### END SOLUTION
 
 ################################################################################
