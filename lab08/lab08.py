@@ -221,7 +221,13 @@ def test_median_3():
 ################################################################################
 def topk(items, k, keyf):
     ### BEGIN SOLUTION
-    pass
+    results = []
+    h = Heap(keyf)
+    for item in items:
+        h.add(item)
+    for _ in range(k):
+        results.append(h.pop())
+    return results
     ### END SOLUTION
 
 ################################################################################
