@@ -64,7 +64,7 @@ class HBStree:
         if cursor == None:
             raise KeyError
         elif key == cursor.val:
-            return cursor
+            return cursorp
         else:
             raise KeyError
         # END SOLUTION
