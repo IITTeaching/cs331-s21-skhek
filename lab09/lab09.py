@@ -56,12 +56,14 @@ class HBStree:
         if self.root_versions[len(self.root_versions) - 1] == None:
             raise KeyError
         cursor = self.root_versions[len(self.root_versions) - 1]
-        while key != cursor.val and (cursor.left or cursor.right):
+        while cursor!= None and key != cursor.val and (cursor.left or cursor.right):
             if key < cursor.val:
                 cursor = cursor.left
             elif key > cursor.val:
                 cursor = cursor.right
-        if key == cursor.val:
+        if cursor == None:
+            raise KeyError
+        elif key == cursor.val:
             return cursor
         else:
             raise KeyError
@@ -75,7 +77,7 @@ class HBStree:
         if self.root_versions[len(self.root_versions) - 1] == None:
             return False
         cursor = self.root_versions[len(self.root_versions) - 1]
-        while el != cursor and (cursor.left or cursor.right):
+        while el != cursor.val and (cursor.left or cursor.right):
             if el < cursor.val:
                 if cursor.left == None:
                     return False
@@ -131,6 +133,56 @@ class HBStree:
     def delete(self,key):
         """Delete key from the tree, creating a new version of the tree. If key does not exist in the current version of the tree, then do nothing and refrain from creating a new version."""
         # BEGIN SOLUTION
+        cursor = self.root_versions[len(self.root_versions) - 1]
+        if self.__contains__(key):
+            oldNodes = []
+            while key != cursor.val and (cursor.left or cursor.right):
+                oldNodes.append(cursor)
+                if key < cursor.val:
+                    cursor = cursor.left
+                elif key > cursor.val:
+                    cursor = cursor.right
+            if cursor.left and cursor.right:
+                    pastNodes = []
+                    holdnode = cursor.left
+                    while holdnode.right:
+                        pastNodes.append(holdnode)
+                        holdnode = holdnode.right
+                    pastNodes.append(None)
+                    for i in range(len(pastNodes) - 2, -1, -1):
+                        currnode = pastNodes[i]
+                        rightchild = pastNodes[i + 1]
+                        newNode = HBStree.INode(currnode.val, currnode.left, rightchild)
+                        pastNodes[i] = newNode
+                    replacement = HBStree.INode(holdnode.val, pastNodes[0], cursor.right)
+                    oldNodes.append(replacement)
+                    for i in range(len(oldNodes) - 1, 0, -1):
+                        curr = oldNodes[i]
+                        parent = oldNodes[i - 1]
+                        if curr.val > parent.val:
+                            newParent = HBStree.INode(parent.val, parent.left, curr)
+                        elif curr.val < parent.val:
+                            newParent = HBStree.INode(parent.val, curr, parent.right)
+                        oldNodes[i - 1] = newParent
+                    self.root_versions.append(oldNodes[0])
+            else:
+                if not cursor.left and not cursor.right:
+                    oldNodes.append(None)
+                elif cursor.right:
+                    oldNodes.append(cursor.right)
+                elif cursor.left:
+                    oldNodes.append(cursor.left)
+                for i in range(len(oldNodes) - 1, 0, -1):
+                    curr = oldNodes[i]
+                    parent = oldNodes[i - 1]
+                    if curr == None:
+                        newParent = HBStree.INode(parent.val, curr, parent.right)
+                    elif curr.val > parent.val:
+                        newParent = HBStree.INode(parent.val, parent.left, curr)
+                    elif curr.val < parent.val:
+                        newParent = HBStree.INode(parent.val, curr, parent.right)
+                    oldNodes[i - 1] = newParent
+                self.root_versions.append(oldNodes[0])
         # END SOLUTION
 
     @staticmethod
@@ -323,6 +375,7 @@ def insert_check_delete(vals):
         t.insert(v)
 
     todo = sorted(vals)
+
     for i in range(0,len(vals)):
         t.delete(todo[0])
         del todo[0]
