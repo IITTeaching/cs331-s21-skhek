@@ -205,13 +205,13 @@ class HBStree:
         version_root = self.root_versions[len(self.root_versions) - 1 - timetravel]
         nodes = set()
         HBStree.all_nodes(version_root, nodes)
-        print('current verion : ')
-        print(version_root)
-        print('__inter__ Nodes:')
-        print(nodes)
+        nodelist = []
         for node in nodes:
-            print('yielding : ' + str(node.val))
-            yield node.val
+            nodelist.append(node.val)
+        if len(nodelist) > 0:
+            nodelist.sort()
+            for el in nodelist:
+                yield el
         # END SOLUTION
 
     @staticmethod
@@ -278,13 +278,9 @@ def check_inserted(vals):
     for v in vals:
         t.insert(v)
 
-    print(t)
-
     for i in range(0,len(vals) + 1):
         sortel = [ v for v in t.version_iter(len(vals) - i) ]
         sortval = sorted(vals[0:i])
-        print(sortel)
-        print(sortval)
         for j in range(0,i):
             tc.assertEqual(sortval[j],sortel[j])
     return t
