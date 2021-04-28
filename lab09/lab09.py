@@ -53,6 +53,18 @@ class HBStree:
         KeyError, if key does not exist.
         """
         # BEGIN SOLUTION
+        if self.root_versions[len(self.root_versions) - 1] == None:
+            raise KeyError
+        cursor = self.root_versions[len(self.root_versions) - 1]
+        while key != cursor.val and (cursor.left or cursor.right):
+            if key < cursor.val:
+                cursor = cursor.left
+            elif key > cursor.val:
+                cursor = cursor.right
+        if key == cursor.val:
+            return cursor
+        else:
+            raise KeyError
         # END SOLUTION
 
     def __contains__(self, el):
@@ -60,6 +72,22 @@ class HBStree:
         Return True if el exists in the current version of the tree.
         """
         # BEGIN SOLUTION
+        if self.root_versions[len(self.root_versions) - 1] == None:
+            return False
+        cursor = self.root_versions[len(self.root_versions) - 1]
+        while el != cursor and (cursor.left or cursor.right):
+            if el < cursor.val:
+                if cursor.left == None:
+                    return False
+                cursor = cursor.left
+            elif el > cursor.val:
+                if cursor.right == None:
+                    return False
+                cursor = cursor.right
+        if el == cursor.val:
+            return True
+        else:
+            return False
         # END SOLUTION
 
     def insert(self,key):
@@ -69,6 +97,35 @@ class HBStree:
         from creating a new version.
         """
         # BEGIN SOLUTION
+        cursor = self.root_versions[len(self.root_versions) - 1]
+        node = HBStree.INode(key, None, None)
+        if cursor == None:
+            self.root_versions.append(node)
+        elif not self.__contains__(key):
+            found = False
+            oldNodes = []
+            while not found:
+                oldNodes.append(cursor)
+                if key < cursor.val:
+                    if cursor.left == None:
+                        found = True
+                    else:
+                        cursor = cursor.left
+                elif key > cursor.val:
+                    if cursor.right == None:
+                        found = True
+                    else:
+                        cursor = cursor.right
+            oldNodes.append(node)
+            for i in range(len(oldNodes) - 1, 0, -1):
+                curr = oldNodes[i]
+                parent = oldNodes[i - 1]
+                if curr.val > parent.val:
+                    newParent = HBStree.INode(parent.val, parent.left, curr)
+                elif curr.val < parent.val:
+                    newParent = HBStree.INode(parent.val, curr, parent.right)
+                oldNodes[i - 1] = newParent
+            self.root_versions.append(oldNodes[0])
         # END SOLUTION
 
     def delete(self,key):
@@ -145,6 +202,16 @@ class HBStree:
         if timetravel < 0 or timetravel >= len(self.root_versions):
             raise IndexError(f"valid versions for time travel are 0 to {len(self.root_versions) -1}, but was {timetravel}")
         # BEGIN SOLUTION
+        version_root = self.root_versions[len(self.root_versions) - 1 - timetravel]
+        nodes = set()
+        HBStree.all_nodes(version_root, nodes)
+        print('current verion : ')
+        print(version_root)
+        print('__inter__ Nodes:')
+        print(nodes)
+        for node in nodes:
+            print('yielding : ' + str(node.val))
+            yield node.val
         # END SOLUTION
 
     @staticmethod
@@ -211,9 +278,13 @@ def check_inserted(vals):
     for v in vals:
         t.insert(v)
 
+    print(t)
+
     for i in range(0,len(vals) + 1):
         sortel = [ v for v in t.version_iter(len(vals) - i) ]
         sortval = sorted(vals[0:i])
+        print(sortel)
+        print(sortval)
         for j in range(0,i):
             tc.assertEqual(sortval[j],sortel[j])
     return t
