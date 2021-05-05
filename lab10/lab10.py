@@ -15,6 +15,9 @@ class AVLTree:
 
         def rotate_left(self):
             ### BEGIN SOLUTION
+            n = self.right
+            self.val, n.val = n.val, self.val
+            self.right, n.right, self.left, n.left = n.right, n.left, n, self.left
             ### END SOLUTION
 
         @staticmethod
@@ -31,16 +34,68 @@ class AVLTree:
     @staticmethod
     def rebalance(t):
         ### BEGIN SOLUTION
+        if t.left != None:
+            lefth = height(t.left)
+        else:
+            lefth = 0
+        if t.right != None:
+            righth = height(t.right)
+        else:
+            righth = 0
+        balance = righth - lefth
+        if balance > 1: # more on right
+            lh = height(t.right.left)
+            rh = height(t.right.right)
+            if lh > rh: # RL
+                t.right.rotate_right()
+                t.rotate_left()
+            elif lh < rh: # RR
+                t.rotate_left()
+        elif balance < -1: # more on right
+            lh = height(t.left.left)
+            rh = height(t.left.right)
+            if lh > rh: # LL
+                t.rotate_right()
+            elif lh < rh: # LR
+                t.left.rotate_left()
+                t.rotate_right()
         ### END SOLUTION
 
     def add(self, val):
         assert(val not in self)
         ### BEGIN SOLUTION
+        if self.root == None:
+            self.root = AVLTree.Node(val)
+        else:
+            cursor = self.root
+            found = False
+            ancestors = []
+            while not found:
+                if val > cursor.val: # goes right of cursor
+                    if cursor.right != None:
+                        ancestors.append(cursor)
+                        cursor = cursor.right
+                    else:
+                        cursor.right = AVLTree.Node(val)
+                        self.size += 1
+                        found = True
+                elif val < cursor.val: # goes left of cursor
+                    if cursor.left != None:
+                        ancestors.append(cursor)
+                        cursor = cursor.left
+                    else:
+                        cursor.left = AVLTree.Node(val)
+                        self.size += 1
+                        found = True
+            for i in range(len(ancestors) - 1, -1, -1):
+                node = ancestors[i]
+                self.rebalance(node)
         ### END SOLUTION
 
     def __delitem__(self, val):
         assert(val in self)
         ### BEGIN SOLUTION
+        pass
         ### END SOLUTION
 
     def __contains__(self, val):
