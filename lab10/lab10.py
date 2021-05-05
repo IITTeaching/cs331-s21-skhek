@@ -302,8 +302,6 @@ def test_key_order_after_ops():
 
     for _ in range(len(vals) // 3):
         to_rem = vals.pop(random.randrange(len(vals)))
-        t.pprint()
-        print(f'deleting . . . {to_rem}')
         del t[to_rem]
 
     vals.sort()
