@@ -34,31 +34,33 @@ class AVLTree:
     @staticmethod
     def rebalance(t):
         ### BEGIN SOLUTION
-        if t.left != None:
-            lefth = height(t.left)
-        else:
-            lefth = 0
-        if t.right != None:
-            righth = height(t.right)
-        else:
-            righth = 0
-        balance = righth - lefth
-        if balance > 1: # more on right
-            lh = height(t.right.left)
-            rh = height(t.right.right)
-            if lh > rh: # RL
-                t.right.rotate_right()
-                t.rotate_left()
-            elif lh < rh: # RR
-                t.rotate_left()
-        elif balance < -1: # more on right
-            lh = height(t.left.left)
-            rh = height(t.left.right)
-            if lh > rh: # LL
-                t.rotate_right()
-            elif lh < rh: # LR
-                t.left.rotate_left()
-                t.rotate_right()
+        balance = 2
+        while balance > 1 or balance < -1:
+            if t.left != None:
+                lefth = AVLTree.Node.height(t.left)
+            else:
+                lefth = 0
+            if t.right != None:
+                righth = AVLTree.Node.height(t.right)
+            else:
+                righth = 0
+            balance = righth - lefth
+            if balance > 1: # more on right
+                lh = height(t.right.left)
+                rh = height(t.right.right)
+                if lh > rh: # RL
+                    t.right.rotate_right()
+                    t.rotate_left()
+                elif lh < rh: # RR
+                    t.rotate_left()
+            elif balance < -1: # more on right
+                lh = height(t.left.left)
+                rh = height(t.left.right)
+                if lh > rh: # LL
+                    t.rotate_right()
+                elif lh < rh: # LR
+                    t.left.rotate_left()
+                    t.rotate_right()
         ### END SOLUTION
 
     def add(self, val):
@@ -95,7 +97,59 @@ class AVLTree:
     def __delitem__(self, val):
         assert(val in self)
         ### BEGIN SOLUTION
-        pass
+        if val == self.root.val and self.root.left == None and self.root.right == None:
+            self.root = None
+        else:
+            cursor = self.root
+            ancestors = []
+            found = False
+            while not found: # sets cursor to node to be deleted
+                if val < cursor.val:
+                    ancestors.append(cursor)
+                    cursor = cursor.left
+                elif val > cursor.val:
+                    ancestors.append(cursor)
+                    cursor = cursor.right
+                else:
+                    found = True
+            curparent = ancestors[-1] # node that is before the node to be deleted
+            if cursor.left != None and cursor.right == None:
+                if cursor.left.val > curparent.val:
+                    curparent.right = cursor.left
+                else:
+                    curparent.left = cursor.left
+            elif cursor.right != None and cursor.left == None:
+                if cursor.right.val > curparent.val:
+                    curparent.right = cursor.right
+                else:
+                    curparent.left = cursor.right
+            elif cursor.right == None and cursor.left == None:
+                if cursor.val > curparent.val:
+                    curparent.right = None
+                else:
+                    curparent.left = None
+            else:
+                current = cursor.left
+                prev = None
+                hold = []
+                while current.right != None:
+                    prev = current
+                    hold.append(current)
+                    current = current.right
+                if prev == None:
+                    current.right = cursor.right
+                else:
+                    if current.left != None:
+                        ancestors[-1].right = current.left
+                    current.left = cursor.left
+                    current.right = cursor.right
+                if current.val > curparent.val:
+                    curparent.right = current
+                else:
+                    curparent.left = current
+            for i in range(len(ancestors) - 1, -1, -1):
+                node = ancestors[i]
+                self.rebalance(node)
         ### END SOLUTION
 
     def __contains__(self, val):
@@ -220,7 +274,7 @@ def test_rl_fix_simple():
 # 30 points
 def test_key_order_after_ops():
     tc = TestCase()
-    vals = list(range(0, 100000000, 333333))
+    vals = list(range(0, 100000000, 333333)) 
     random.shuffle(vals)
 
     t = AVLTree()
