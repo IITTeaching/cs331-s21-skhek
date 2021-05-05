@@ -293,7 +293,7 @@ def test_rl_fix_simple():
 # 30 points
 def test_key_order_after_ops():
     tc = TestCase()
-    vals = list(range(0, 30, 1))  # 100000000, 333333
+    vals = list(range(0, 100000000, 333333))
     random.shuffle(vals)
 
     t = AVLTree()
