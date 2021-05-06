@@ -72,18 +72,20 @@ class AVLTree:
             ancestors = []
             while not found:
                 if val > cursor.val: # goes right of cursor
-                    if cursor.right != None:
+                    if cursor.right:
                         ancestors.append(cursor)
                         cursor = cursor.right
                     else:
+                        ancestors.append(cursor)
                         cursor.right = AVLTree.Node(val)
                         self.size += 1
                         found = True
                 elif val < cursor.val: # goes left of cursor
-                    if cursor.left != None:
+                    if cursor.left:
                         ancestors.append(cursor)
                         cursor = cursor.left
                     else:
+                        ancestors.append(cursor)
                         cursor.left = AVLTree.Node(val)
                         self.size += 1
                         found = True
@@ -315,10 +317,10 @@ def test_stress_testing():
     tc = TestCase()
 
     def check_balance(t):
-        tc.assertLess(abs(height(t.left) - height(t.right)), 2, 'Tree is out of balance')
+        tc.assertLess(abs(height(t.left) - height(t.right)), 2, f'Tree is out of balance')
 
     t = AVLTree()
-    vals = list(range(30))
+    vals = list(range(1000))
     random.shuffle(vals)
     for i in range(len(vals)):
         t.add(vals[i])
